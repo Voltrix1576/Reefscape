@@ -39,7 +39,7 @@ public class SwerveDriveCommand extends Command {
       omega = 0;
     }
 
-    swerve.drive(xv, yv, omega, true);
+    swerve.drive(xv, yv, -omega, true);
 
 
   }
