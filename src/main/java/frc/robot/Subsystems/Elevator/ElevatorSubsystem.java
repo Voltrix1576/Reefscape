@@ -8,7 +8,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,6 +17,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -27,6 +27,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0);
   private StatusSignal<Angle> elevatorPose = elevatorMotor.getPosition();
   private SparkFlex sliderMotor = new SparkFlex(ElevatorConstants.SLIDER_MOTOR_ID , MotorType.kBrushless);
+  private DigitalInput elevatorLimitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_ID);
 
   public ElevatorSubsystem() {
     configElevatorMotor();
@@ -46,7 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      elevatorMotorConfiguration.Slot0.kI = ElevatorConstants.ELEVATOR_I;
      elevatorMotorConfiguration.Slot0.kD = ElevatorConstants.ELEVATOR_D;
 
-     elevatorMotionMagicConfigs.MotionMagicCruiseVelocity = 40;
+     elevatorMotionMagicConfigs.MotionMagicCruiseVelocity = 90;
      elevatorMotionMagicConfigs.MotionMagicAcceleration = 100;
 
      elevatorMotor.getConfigurator().apply(elevatorMotorConfiguration);
@@ -78,6 +79,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     return elevatorPose.getValueAsDouble();
   }
 
+  public void resetElevator() {
+    if (elevatorLimitSwitch.get()) {
+      if (getElevatorPose() != 0) {
+        elevatorMotor.setPosition(0);  
+      }
+       
+    }
+  }
 
   public static ElevatorSubsystem getInstance() {
     if (instance == null) {
@@ -89,5 +98,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Pose", getElevatorPose());
+    SmartDashboard.putBoolean("Limit Swith", elevatorLimitSwitch.get());
+    resetElevator();
   }
 }

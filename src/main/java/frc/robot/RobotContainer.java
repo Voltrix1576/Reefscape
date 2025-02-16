@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.lang.model.element.ModuleElement.DirectiveVisitor;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,43 +42,62 @@ public class RobotContainer {
 
      driverController.rightBumper().onTrue( //L4
       new SequentialCommandGroup(
-        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(90)),
+        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(2.2)),
         new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(0.15)),
-        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(87.5))));
+        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(99))));
 
 
      driverController.rightStick().onTrue(  //L3
       new SequentialCommandGroup(
-        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(90)),
+        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(2.2)),
         new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(0.25)),
-        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(45.3))));
+        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(49))));
 
       driverController.leftStick().onTrue( //L2
       new SequentialCommandGroup(
-      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(90)),
-      new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(21.1))));
+      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(2.2)),
+      new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(25.4))));
 
       driverController.leftBumper().onTrue(
       new SequentialCommandGroup(  //L1 / 0
-      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(2)),
       new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(1)),
-      new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(5))));
-
-      driverController.a().onTrue(
-      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(90)));
-
-      driverController.b().onFalse(
-        new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(0.2)));
-
-      driverController.x().onTrue(
-        new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(-0.2)));
-
-      driverController.povUp().onTrue(
-        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(80)));
+      new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(7)),
+      new InstantCommand(() -> startTime = Timer.getFPGATimestamp()),
+      new WaitUntilCommand(() -> Timer.getFPGATimestamp() - startTime >= 1.5),
+      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(0.5))));
 
 
-        driverController.povDown().onTrue(
-          new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(5)));
+
+      
+      // driverController.povLeft().whileTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(0.05)))
+      // .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(0)));
+
+      // driverController.povRight().whileTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(-0.05)))
+      // .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(0)));
+
+      driverController.a().onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(5)));
+
+      driverController.b().onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(0.5)));
+      
+     
+     
+     
+      driverController.x().whileTrue(
+        new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(1)))
+        .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(0)));
+
+      // driverController.b().whileTrue(
+      //   new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(-1)))
+      //   .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(0)));
+
+      driverController.povUp().whileTrue(
+        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPower(0.2)))
+        .whileFalse(new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPower(0)));
+       
+       
+       driverController.povDown().whileTrue(
+        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPower(-0.2)))
+        .whileFalse(new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPower(0)));
   }
 
   public Command getAutonomousCommand() {

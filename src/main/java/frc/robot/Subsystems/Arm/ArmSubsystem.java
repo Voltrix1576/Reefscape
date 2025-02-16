@@ -5,7 +5,9 @@
 package frc.robot.Subsystems.Arm;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,15 +21,29 @@ public class ArmSubsystem extends SubsystemBase {
   private static ArmSubsystem instance;
   private TalonFX armMotor = new TalonFX(ArmConstants.ARM_MOTOR_ID);
   private TalonFX intakeMotor = new TalonFX(ArmConstants.INTAKE_MOTOR_ID);
-  private PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
+  private MotionMagicVoltage armMotionMagicVoltage = new MotionMagicVoltage(0);
+  private PositionVoltage positionVoltage = new PositionVoltage(0);
   private StatusSignal<Angle> armPose = armMotor.getPosition();
   
    public ArmSubsystem() {
     configArmMotor();
+    configIntakeMotor();
+   }
+
+   private void configIntakeMotor() {
+    TalonFXConfiguration intakeMotorConfiguration = new TalonFXConfiguration();
+
+    intakeMotorConfiguration.MotorOutput.Inverted = ArmConstants.IS_INTAKE_MOTOR_INVERTED ?
+    InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+
+    intakeMotorConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    intakeMotor.getConfigurator().apply(intakeMotorConfiguration);
    }
 
   private void configArmMotor() {
     TalonFXConfiguration armMotorConfiguration = new TalonFXConfiguration();
+    MotionMagicConfigs armMotionMagicConfigs = new MotionMagicConfigs();
 
     armMotorConfiguration.MotorOutput.Inverted = ArmConstants.IS_ARM_MOTOR_INVERTED ? 
     InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
@@ -38,6 +54,9 @@ public class ArmSubsystem extends SubsystemBase {
      armMotorConfiguration.Slot0.kI = ArmConstants.ARM_I;
      armMotorConfiguration.Slot0.kD = ArmConstants.ARM_D;
 
+    armMotionMagicConfigs.MotionMagicCruiseVelocity = 90;
+    armMotionMagicConfigs.MotionMagicAcceleration = 100;  
+
      armMotor.getConfigurator().apply(armMotorConfiguration);
   }
 
@@ -46,7 +65,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArmPose(double setPoint) {
-    armMotor.setControl(positionVoltage.withPosition(setPoint));
+    armMotor.setControl(armMotionMagicVoltage.withPosition(setPoint));
+    //armMotor.setControl(positionVoltage.withPosition(setPoint));
   }
 
   public double getArmPose() {
@@ -68,5 +88,6 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Arm Pose", getArmPose());
+    System.out.println(armMotor.get());
   }
 }
