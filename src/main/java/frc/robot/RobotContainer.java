@@ -3,9 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-import javax.lang.model.element.ModuleElement.DirectiveVisitor;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,10 +25,13 @@ public class RobotContainer {
   private void configureBindings() {
     driverController.y().whileTrue(new InstantCommand(() -> SwerveDriveTrain.getInstance().updateOffset()));
 
-    
+    // driverController.leftTrigger().whileTrue(
+    //  new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(0.2)))
+    // .whileFalse(new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(1)));
+
     driverController.leftTrigger().whileTrue(
-     new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(0.2)))
-    .whileFalse(new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(1)));
+     new InstantCommand(() -> ArmSubsystem.getInstance().setArmVol(5)))
+    .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setArmVol(0)));
 
     driverController.rightTrigger().onTrue(
       new SequentialCommandGroup(
@@ -42,21 +42,21 @@ public class RobotContainer {
 
      driverController.rightBumper().onTrue( //L4
       new SequentialCommandGroup(
-        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(2.2)),
+        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(-2)),
         new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(0.15)),
-        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(99))));
+        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(90))));
 
 
      driverController.rightStick().onTrue(  //L3
       new SequentialCommandGroup(
-        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(2.2)),
+        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(-2.6)),
         new InstantCommand(() -> SwerveDriveTrain.getInstance().setVelocityFactor(0.25)),
-        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(49))));
+        new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(43))));
 
       driverController.leftStick().onTrue( //L2
       new SequentialCommandGroup(
-      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(2.2)),
-      new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(25.4))));
+      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(-2.6)),
+      new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(19))));
 
       driverController.leftBumper().onTrue(
       new SequentialCommandGroup(  //L1 / 0
@@ -64,31 +64,25 @@ public class RobotContainer {
       new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPose(7)),
       new InstantCommand(() -> startTime = Timer.getFPGATimestamp()),
       new WaitUntilCommand(() -> Timer.getFPGATimestamp() - startTime >= 1.5),
-      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(0.5))));
+      new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(1.3))));
 
+      driverController.povRight().onTrue(
+        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(-2.3)));
 
+        driverController.povLeft().onTrue(
+        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(-7)));
 
+        driverController.leftTrigger().onTrue(
+        new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(-4)));
       
-      // driverController.povLeft().whileTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(0.05)))
-      // .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(0)));
-
-      // driverController.povRight().whileTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(-0.05)))
-      // .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPower(0)));
-
-      driverController.a().onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(5)));
-
-      driverController.b().onTrue(new InstantCommand(() -> ArmSubsystem.getInstance().setArmPose(0.5)));
-      
-     
-     
-     
-      driverController.x().whileTrue(
+       driverController.x().whileTrue(
         new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(1)))
         .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(0)));
 
-      // driverController.b().whileTrue(
-      //   new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(-1)))
-      //   .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(0)));
+      driverController.b().whileTrue(
+        new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(-1)))
+        .whileFalse(new InstantCommand(() -> ArmSubsystem.getInstance().setIntakePower(0)));
+
 
       driverController.povUp().whileTrue(
         new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPower(0.2)))
@@ -98,6 +92,7 @@ public class RobotContainer {
        driverController.povDown().whileTrue(
         new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPower(-0.2)))
         .whileFalse(new InstantCommand(() -> ElevatorSubsystem.getInstance().setElevatorPower(0)));
+
   }
 
   public Command getAutonomousCommand() {

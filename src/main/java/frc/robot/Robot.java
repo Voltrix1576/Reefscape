@@ -3,22 +3,25 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.SwerveDriveCommand;
+import frc.robot.Subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.Subsystems.Swerve.SwerveDriveTrain;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
+  
 
   public Robot() {
     m_robotContainer = new RobotContainer();
     SwerveDriveTrain.getInstance();
-
     SwerveDriveTrain.getInstance().resetEncoders();
+    CameraServer.startAutomaticCapture("Arm Camera", 0);
+    CameraServer.startAutomaticCapture("Elevator Camera", 1);
   }
 
   @Override
@@ -65,7 +68,22 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() 
   {
-   
+   if (20 <= ElevatorSubsystem.getInstance().getElevatorPose() 
+   && ElevatorSubsystem.getInstance().getElevatorPose() <= 50) {
+    SwerveDriveTrain.getInstance().setVelocityFactor(0.6);
+   }
+   else if (50 < ElevatorSubsystem.getInstance().getElevatorPose() 
+   && ElevatorSubsystem.getInstance().getElevatorPose() <= 70) {
+    SwerveDriveTrain.getInstance().setVelocityFactor(0.4);
+
+   }
+   else if (70 < ElevatorSubsystem.getInstance().getElevatorPose() 
+   && ElevatorSubsystem.getInstance().getElevatorPose() <= 150) {
+    SwerveDriveTrain.getInstance().setVelocityFactor(0.2);
+   }
+   else {
+    SwerveDriveTrain.getInstance().setVelocityFactor(1);
+   }
   }
 
   @Override

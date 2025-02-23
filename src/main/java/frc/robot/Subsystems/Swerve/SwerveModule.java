@@ -79,7 +79,8 @@ public class SwerveModule {
         turningConfig.encoder.positionConversionFactor(SwerveConstants.POSE_TURNING_FACTOR);
         turningConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         turningConfig.closedLoop.pid(SwerveConstants.TURNING_KP, SwerveConstants.TURNING_KI, SwerveConstants.TURNING_KD);
-
+        
+        turningConfig.smartCurrentLimit(30);
         turningMotor.configure(turningConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

@@ -8,11 +8,9 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,7 +20,6 @@ public class ArmSubsystem extends SubsystemBase {
   private TalonFX armMotor = new TalonFX(ArmConstants.ARM_MOTOR_ID);
   private TalonFX intakeMotor = new TalonFX(ArmConstants.INTAKE_MOTOR_ID);
   private MotionMagicVoltage armMotionMagicVoltage = new MotionMagicVoltage(0);
-  private PositionVoltage positionVoltage = new PositionVoltage(0);
   private StatusSignal<Angle> armPose = armMotor.getPosition();
   
    public ArmSubsystem() {
@@ -53,20 +50,25 @@ public class ArmSubsystem extends SubsystemBase {
      armMotorConfiguration.Slot0.kP = ArmConstants.ARM_P;
      armMotorConfiguration.Slot0.kI = ArmConstants.ARM_I;
      armMotorConfiguration.Slot0.kD = ArmConstants.ARM_D;
+     armMotorConfiguration.Slot0.kG = ArmConstants.ARM_KG;
 
-    armMotionMagicConfigs.MotionMagicCruiseVelocity = 90;
-    armMotionMagicConfigs.MotionMagicAcceleration = 100;  
+     armMotionMagicConfigs.MotionMagicCruiseVelocity = 10;
+     armMotionMagicConfigs.MotionMagicAcceleration = 20;  
 
      armMotor.getConfigurator().apply(armMotorConfiguration);
+     armMotor.getConfigurator().apply(armMotionMagicConfigs);
   }
 
   public void setArmPower(double power) {
     armMotor.set(power);
   }
 
+  public void setArmVol(double vol) {
+    armMotor.setVoltage(vol);
+  }
+
   public void setArmPose(double setPoint) {
     armMotor.setControl(armMotionMagicVoltage.withPosition(setPoint));
-    //armMotor.setControl(positionVoltage.withPosition(setPoint));
   }
 
   public double getArmPose() {
@@ -87,7 +89,7 @@ public class ArmSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
+    
     SmartDashboard.putNumber("Arm Pose", getArmPose());
-    System.out.println(armMotor.get());
   }
 }
