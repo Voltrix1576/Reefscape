@@ -47,8 +47,8 @@ public class ElevatorSubsystem extends SubsystemBase {
      elevatorMotorConfiguration.Slot0.kI = ElevatorConstants.ELEVATOR_I;
      elevatorMotorConfiguration.Slot0.kD = ElevatorConstants.ELEVATOR_D;
 
-     elevatorMotionMagicConfigs.MotionMagicCruiseVelocity = 90;
-     elevatorMotionMagicConfigs.MotionMagicAcceleration = 100;
+     elevatorMotionMagicConfigs.MotionMagicCruiseVelocity = 110;
+     elevatorMotionMagicConfigs.MotionMagicAcceleration = 140;
 
      elevatorMotor.getConfigurator().apply(elevatorMotorConfiguration);
   }

@@ -153,10 +153,5 @@ public class SwerveDriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Rear Right Angle", rearRightModule.getTurningPose());
 
     SmartDashboard.putNumber("navx", getAngle());
-
-    //rearRightModule.driveMotorSetPower(0.4);
-    //rearRightModule.turningMotorSetPower(0.4);
-    
-
   }
 }

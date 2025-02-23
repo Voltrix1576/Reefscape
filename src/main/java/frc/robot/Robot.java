@@ -66,25 +66,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() 
-  {
-   if (20 <= ElevatorSubsystem.getInstance().getElevatorPose() 
-   && ElevatorSubsystem.getInstance().getElevatorPose() <= 50) {
-    SwerveDriveTrain.getInstance().setVelocityFactor(0.6);
-   }
-   else if (50 < ElevatorSubsystem.getInstance().getElevatorPose() 
-   && ElevatorSubsystem.getInstance().getElevatorPose() <= 70) {
-    SwerveDriveTrain.getInstance().setVelocityFactor(0.4);
-
-   }
-   else if (70 < ElevatorSubsystem.getInstance().getElevatorPose() 
-   && ElevatorSubsystem.getInstance().getElevatorPose() <= 150) {
-    SwerveDriveTrain.getInstance().setVelocityFactor(0.2);
-   }
-   else {
-    SwerveDriveTrain.getInstance().setVelocityFactor(1);
-   }
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void teleopExit() {}

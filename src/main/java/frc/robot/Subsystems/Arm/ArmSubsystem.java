@@ -25,6 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
    public ArmSubsystem() {
     configArmMotor();
     configIntakeMotor();
+    resetArm();
    }
 
    private void configIntakeMotor() {
@@ -78,6 +79,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setIntakePower(double power) {
     intakeMotor.set(power);
+  }
+
+  public void resetArm() {
+    armMotor.setPosition(0);
   }
 
   public static ArmSubsystem getInstance() {
