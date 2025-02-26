@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.SwerveDriveCommand;
-import frc.robot.Subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.Subsystems.Swerve.SwerveDriveTrain;
 
 public class Robot extends TimedRobot {
@@ -62,6 +61,8 @@ public class Robot extends TimedRobot {
     SwerveDriveTrain.getInstance().resetEncoders();
 
     CommandScheduler.getInstance().setDefaultCommand(SwerveDriveTrain.getInstance(), new SwerveDriveCommand());
+
+    SwerveDriveTrain.getInstance().updateOffset();
 
   }
 

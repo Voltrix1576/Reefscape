@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Auto2StartToNearReef"
+            "pathName": "Auto2StartToReef"
           }
         },
         {
@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Auto2NearReefToHuman"
+            "pathName": "Auto2StartReefToHuman"
           }
         },
         {
@@ -85,13 +85,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Auto2LeftReefToHuman"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Auto2LeftReefToEnd"
           }
         }
       ]

@@ -152,6 +152,10 @@ public class SwerveModule {
         return new SwerveModuleState(getDriveVelocity(), Rotation2d.fromDegrees(getTurningPose()));
     }
 
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(getDrivePose(), new Rotation2d(Math.toRadians(getTurningPose())));
+    }
+
     public void setDesiredState(SwerveModuleState desiredState) {
         SwerveModuleState optimizedState = SwerveModule.optimize(desiredState, getTurningPose());
 

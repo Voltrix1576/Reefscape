@@ -31,7 +31,7 @@ public class SwerveConstants {
     public static final double MAX_VELOCITY = 4.572;
     public static final double MAX_ANGULAR_VELOCITY = MAX_VELOCITY / RADIUS;
 
-    public static final double MAX_ACCELERATION = Math.pow(MAX_VELOCITY, 2) / RADIUS;
+    public static final double MAX_ACCELERATION = 4.4 / 2;
     public static final double MAX_ANGOLAR_ACCELERATION = MAX_ACCELERATION / RADIUS;
 
     //front left module

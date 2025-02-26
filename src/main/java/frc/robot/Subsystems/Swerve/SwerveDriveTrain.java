@@ -4,19 +4,28 @@
 
 package frc.robot.Subsystems.Swerve;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDriveTrain extends SubsystemBase {
   private static SwerveDriveTrain instance;
+
+  
   
   public double maxV = SwerveConstants.MAX_VELOCITY;
   public double maxAV = SwerveConstants.MAX_ANGULAR_VELOCITY;
@@ -69,15 +78,40 @@ public class SwerveDriveTrain extends SubsystemBase {
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftLocation, 
   frontRightLocation,
   rearLeftLocation, rearRightLocation); 
+  
 
   // new Translation2d(SwerveConstants.WIDTH / 2.0, SwerveConstants.WIDTH / 2.0), //front left
   // new Translation2d(SwerveConstants.WIDTH / 2.0, -SwerveConstants.WIDTH / 2.0), // front right
   // new Translation2d(-SwerveConstants.WIDTH / 2.0, SwerveConstants.WIDTH / 2.0), //rear left
   // new Translation2d(-SwerveConstants.WIDTH / 2.0, -SwerveConstants.WIDTH / 2.0) //rear right
 
+  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(getKinematics(), getRotation2d(), getPositions());
+
   public SwerveDriveTrain() {
-    
     navx.reset();
+    
+    try {
+      RobotConfig config = RobotConfig.fromGUISettings();
+      
+      AutoBuilder.configure(
+        this::getPose,
+        this::resetOdometry,
+        this::getRobotRelativeSpeed,
+        this::driveAuto,
+        new PPHolonomicDriveController(new PIDConstants(3, 0, 0), new PIDConstants(3, 0, 0)),
+        config,
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
+    } catch (Exception e) {
+      System.out.println("Error Loading Path");
+    }
+
   }
 
   public void stop() {
@@ -113,6 +147,39 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public SwerveDriveKinematics getKinematics() {
     return kinematics;
+  }
+
+  private SwerveModulePosition[] getPositions() {
+    return new SwerveModulePosition[] {
+      frontLeftModule.getPosition(),
+      frontRightModule.getPosition(),
+      rearLeftModule.getPosition(),
+      rearRightModule.getPosition() };
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    odometry.resetPosition(getRotation2d(), getPositions(), pose);
+  }
+
+  private SwerveModuleState[] getStates() {
+    return new SwerveModuleState[] {
+      frontLeftModule.getState(),
+      frontRightModule.getState(),
+      rearLeftModule.getState(),
+      rearRightModule.getState()
+    };
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeed() {
+    return kinematics.toChassisSpeeds(getStates());
+  }
+
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  public void driveAuto(ChassisSpeeds speeds) {
+    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
   }
 
   public void setSwerveState(SwerveModuleState[] states) {
@@ -153,5 +220,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("Rear Right Angle", rearRightModule.getTurningPose());
 
     SmartDashboard.putNumber("navx", getAngle());
+
   }
 }

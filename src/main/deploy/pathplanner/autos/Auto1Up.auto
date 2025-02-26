@@ -5,33 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "ScoreNet"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetElevator"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Auto1NetToHuman"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Auto1HumanToLeftReef"
+            "pathName": "Auto1UpToReef"
           }
         },
         {
@@ -49,7 +25,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Auto1LeftReefToHuman"
+            "pathName": "Auto1StartReefToHuman"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto1HumanToReefLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreL4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetElevator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto1ReefLeftToHuman"
           }
         },
         {
@@ -79,31 +85,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Auto1RightReefToHuman"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Auto1HumanToFarLeftReef"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreL4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ResetElevator"
+            "pathName": "Auto1RightReefToEnd"
           }
         }
       ]
