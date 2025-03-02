@@ -1,6 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -96,6 +97,11 @@ public class SwerveModule {
         driveConfiguration.Slot0.kI = SwerveConstants.DRIVE_KI;
         driveConfiguration.Slot0.kD = SwerveConstants.DRIVE_KD;
 
+        var limitConfig = new CurrentLimitsConfigs();
+        limitConfig.StatorCurrentLimit = 32;
+        limitConfig.StatorCurrentLimitEnable = true;
+
+        driveMotor.getConfigurator().apply(limitConfig);
         driveMotor.getConfigurator().apply(driveConfiguration);
     }
 

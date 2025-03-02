@@ -28,7 +28,7 @@ public class SwerveConstants {
     public static final double TURNING_KD = 0;
 
     //swerve physics
-    public static final double MAX_VELOCITY = 4.572;
+    public static final double MAX_VELOCITY = 3.8; //4.572
     public static final double MAX_ANGULAR_VELOCITY = MAX_VELOCITY / RADIUS;
 
     public static final double MAX_ACCELERATION = 4.4 / 2;
@@ -48,7 +48,7 @@ public class SwerveConstants {
     public static final int FRONT_RIGHT_TURNING_ID = 13;
     public static final int FRONT_RIGHT_ABSULOTE_ENCODER_ID = 8; 
     public static final double FRONT_RIGHT_ABSULOTE_ENCODER_OFFSET = 52.998;
-    public static final boolean FRONT_RIGHT_IS_DRIVE_MOTOR_INVERTED  = true;  
+    public static final boolean FRONT_RIGHT_IS_DRIVE_MOTOR_INVERTED  = true;
     public static final boolean FRONT_RIGHT_IS_TURNING_MOTOR_INVERTED = true;
     public static final boolean FRONT_RIGHT_IS_ABSULOTE_ENCODER_INVERTED = true;
 

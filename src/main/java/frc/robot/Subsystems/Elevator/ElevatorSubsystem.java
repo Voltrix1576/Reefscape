@@ -5,6 +5,7 @@
 package frc.robot.Subsystems.Elevator;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -15,7 +16,6 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,6 +50,11 @@ public class ElevatorSubsystem extends SubsystemBase {
      elevatorMotionMagicConfigs.MotionMagicCruiseVelocity = 110;
      elevatorMotionMagicConfigs.MotionMagicAcceleration = 140;
 
+     var limitConfig = new CurrentLimitsConfigs();
+      limitConfig.StatorCurrentLimit = 32;
+      limitConfig.StatorCurrentLimitEnable = true;
+
+      elevatorMotor.getConfigurator().apply(limitConfig);
      elevatorMotor.getConfigurator().apply(elevatorMotorConfiguration);
   }
 
@@ -80,12 +85,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void resetElevator() {
-    if (elevatorLimitSwitch.get()) {
+    if (!elevatorLimitSwitch.get()) {
       if (getElevatorPose() != 0) {
         elevatorMotor.setPosition(0);  
       }
        
     }
+  }
+
+  public void setSliderMotorVolts(double volts) {
+    sliderMotor.setVoltage(volts);
   }
 
   public static ElevatorSubsystem getInstance() {
@@ -98,7 +107,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Pose", getElevatorPose());
-    SmartDashboard.putBoolean("Limit Swith", elevatorLimitSwitch.get());
-    resetElevator();
+    //SmartDashboard.putBoolean("Limit Swith", !elevatorLimitSwitch.get());
   }
 }

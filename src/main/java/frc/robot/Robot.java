@@ -5,27 +5,36 @@
 package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.SwerveDriveCommand;
+import frc.robot.Subsystems.Limelight.limelight;
 import frc.robot.Subsystems.Swerve.SwerveDriveTrain;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
-  
+  private limelight aprilTagLimelight = new limelight("limelight");
 
   public Robot() {
     m_robotContainer = new RobotContainer();
     SwerveDriveTrain.getInstance();
     SwerveDriveTrain.getInstance().resetEncoders();
-    CameraServer.startAutomaticCapture("Arm Camera", 0);
     CameraServer.startAutomaticCapture("Elevator Camera", 1);
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    
+    aprilTagLimelight.periodic();
+
+    SmartDashboard.putNumber("AprilTagLimelightX", aprilTagLimelight.getX());
+    SmartDashboard.putNumber("AprilTagLimelightY", aprilTagLimelight.getY());
+    SmartDashboard.putNumber("AprilTagLimelightArea", aprilTagLimelight.getArea());
+    SmartDashboard.putNumber("AprilTagLimelightID", aprilTagLimelight.getTagId());
+    
   }
   
   @Override
@@ -61,8 +70,6 @@ public class Robot extends TimedRobot {
     SwerveDriveTrain.getInstance().resetEncoders();
 
     CommandScheduler.getInstance().setDefaultCommand(SwerveDriveTrain.getInstance(), new SwerveDriveCommand());
-
-    SwerveDriveTrain.getInstance().updateOffset();
 
   }
 

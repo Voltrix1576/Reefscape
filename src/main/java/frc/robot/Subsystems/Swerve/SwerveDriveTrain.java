@@ -98,7 +98,7 @@ public class SwerveDriveTrain extends SubsystemBase {
         this::resetOdometry,
         this::getRobotRelativeSpeed,
         this::driveAuto,
-        new PPHolonomicDriveController(new PIDConstants(3, 0, 0), new PIDConstants(3, 0, 0)),
+        new PPHolonomicDriveController(new PIDConstants(0.5, 0, 0), new PIDConstants(0.5, 0, 0)),
         config,
         () -> {
           var alliance = DriverStation.getAlliance();
